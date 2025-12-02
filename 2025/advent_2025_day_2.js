@@ -1,6 +1,6 @@
 const fs = require('fs').promises;
 
-isIDInvalid = (id) => {
+isIDInvalidP1 = (id) => {
   let str = id.toString();
 
   if (str.length % 2 !== 0) return false;
@@ -11,7 +11,7 @@ isIDInvalid = (id) => {
   return firstPart == secondPart;
 };
 
-async function invalidIDsSum(filePath) {
+async function invalidIDsSumP1(filePath) {
   let sum = 0;
 
   const data = await fs.readFile(filePath, "utf8")
@@ -32,4 +32,4 @@ async function invalidIDsSum(filePath) {
 }
 
 
-invalidIDsSum("advent_2025_day_2_input.txt").then(sum => console.log(sum));
+invalidIDsSumP1("advent_2025_day_2_input.txt").then(sum => console.log(sum));
