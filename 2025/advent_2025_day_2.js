@@ -11,7 +11,18 @@ isIDInvalidP1 = (id) => {
   return firstPart == secondPart;
 };
 
-async function invalidIDsSumP1(filePath) {
+isIDInvalidP2 = (id) => {
+  let str = id.toString();
+
+  if (str.length % 2 !== 0) return false;
+
+  const firstPart = str.slice(0, str.length / 2);
+  const secondPart = str.slice(str.length / 2);
+
+  return firstPart == secondPart;
+};
+
+async function invalidIDsSum(filePath) {
   let sum = 0;
 
   const data = await fs.readFile(filePath, "utf8")
@@ -23,7 +34,7 @@ async function invalidIDsSumP1(filePath) {
     const lastID = parseInt(ranges[i].split("-")[1]);
 
     while (currentID <= lastID) {
-      if (isIDInvalid(currentID)) sum += currentID;
+      if (isIDInvalidP2(currentID)) sum += currentID;
       ++currentID;
     }
   }
@@ -32,4 +43,4 @@ async function invalidIDsSumP1(filePath) {
 }
 
 
-invalidIDsSumP1("advent_2025_day_2_input.txt").then(sum => console.log(sum));
+invalidIDsSum("advent_2025_day_2_input.txt").then(sum => console.log(sum));
