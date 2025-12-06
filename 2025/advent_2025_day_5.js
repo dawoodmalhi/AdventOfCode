@@ -33,10 +33,8 @@ async function freshIngredientsCountP2(filePath) {
     const [start, end] = ranges[i];
 
     if (start <= currentEnd) {
-      // Overlap → extend the current range
       currentEnd = Math.max(currentEnd, end);
     } else {
-      // No overlap → push the finished range
       mergedRanges.push([currentStart, currentEnd]);
       currentStart = start;
       currentEnd = end;
