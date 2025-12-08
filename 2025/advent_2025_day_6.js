@@ -1,47 +1,56 @@
 const fs = require("fs").promises;
 
-
-function transformOperandsToCorrectFormat(data, index){
-  let operands = [];
-
-  let stop = false;
-
-  while(!stop){
-    let operand = 0;
-    for(let i = 0; i < data.length; ++i){
-      if(data[i][index] != 0){
-        const digit = data[i][index] % 10;
-        data[i][index] = (data[i][index] - digit) / 10;
-        operand = (operand * 10) + digit;
-      }
-    }
-    operand == 0 ? stop = true : operands.push(operand);
-  }
-
-  return operands;
-}
-
-function performCalculationsP2(data, operations) {
+function performCalculationsP2(lines) {
+  let maxLength = Math.max(...lines.map(line => line.length));
   let result = 0;
 
-  for(let opIdx = 0; opIdx < operations.length; opIdx++){
-    let total = operations[opIdx] == '+' ? 0 : 1;
+  let spaceEncountered;
+  let operands = [];
+  let operation;
+  for(let i = 0; i <= maxLength; i++){
 
-    const transformedOperands = transformOperandsToCorrectFormat(data, opIdx);
+    spaceEncountered = 0;
 
-    for(let i = 0; i < transformedOperands.length; i++)
-      if(operations[opIdx] == '+')
-        total += transformedOperands[i];
-      else
-        total *= transformedOperands[i];
-    
-    result += total;
+    let number = 0;
+    for(let lineIdx = 0; lineIdx < lines.length; lineIdx++){
+      if(['+', '*'].includes(lines[lineIdx][i])){
+        operation = lines[lineIdx][i];
+      } else if(lines[lineIdx][i] == ' ' || lines[lineIdx][i] === undefined){
+        ++spaceEncountered;
+      } else {
+        number = (number * 10) + parseInt(lines[lineIdx][i]);
+      }
+    }
+
+
+    if(spaceEncountered == lines.length){
+      if(operation == '*')
+        result += operands.reduce((acc, num) => acc * num, 1);
+      else if(operation == '+')
+        result += operands.reduce((sum, num) => sum + num, 0);
+
+      operation = null;
+      operands = [];
+    } else {
+      operands.push(number);
+    }
   }
   
   return result;
 }
 
-function performCalculationsP1(data, operations) {
+function performCalculationsP1(lines) {
+  let data = [];
+  let operations = [];
+  for(let i = 0; i < lines.length; i++){
+    const splittedLine = lines[i].split(/\s+/).filter((word) => word.length > 0);
+
+    if(i == lines.length - 1)
+      operations = splittedLine
+    else
+      data.push(splittedLine.map((num) => parseInt(num)));
+  }
+
   let result = 0;
 
   for(let opIdx = 0; opIdx < operations.length; opIdx++){
@@ -64,22 +73,10 @@ async function mathHomework(filePath) {
 
   const lines = file.split("\n");
 
-  let data = [];
-  let operations = [];
-  for(let i = 0; i < lines.length; i++){
-    const splittedLine = lines[i].split(/\s+/).filter((word) => word.length > 0);
-
-    if(i == lines.length - 1)
-      operations = splittedLine
-    else
-      data.push(splittedLine.map((num) => parseInt(num)));
-  }
-
-
-
-  return performCalculationsP2(data, operations);
+  // return performCalculationsP1(lines);
+  return performCalculationsP2(lines);
 }
 
-mathHomework("advent_2025_day_6_mini_input.txt").then((result) =>
+mathHomework("advent_2025_day_6_input.txt").then((result) =>
   console.log(result)
 );
